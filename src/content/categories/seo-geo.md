@@ -1,5 +1,5 @@
 ---
-name: "SEO &amp; GEO Agents"
+name: "SEO & GEO Agents"
 tagline: "AI agents for search and AI-engine visibility."
 description: "Agents that win both Google rankings and AI-Overview citations. Covers technical SEO, programmatic SEO, GEO (Generative Engine Optimization), schema markup, and AI-crawler access."
 order: 4
