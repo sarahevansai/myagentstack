@@ -27,11 +27,12 @@ const {
 } = Astro.props;
 
 const priceBadge = inferPricing(pricing);
+const shortCategory = categoryLabel.replace(/ Agents?$/i, '');
 ---
 
 <a class="agent-card card" href={href} data-category={category} data-tier={tier}>
   <div class="agent-card-top">
-    <span class="tag">{categoryLabel}</span>
+    <span class="tag">{shortCategory}</span>
     <div class="badges">
       <span class={priceBadge.className} title={pricing ?? priceBadge.label}>{priceBadge.label}</span>
       {tier === 'curated' && (

@@ -100,7 +100,7 @@ const jsonLd = [
 
       <header class="agent-hero">
         <div class="hero-tags">
-          <span class="tag">{categoryLabel}</span>
+          <span class="tag">{categoryLabel.replace(/ Agents?$/i, '')}</span>
           <span class={priceBadge.className} title={data.pricing}>{priceBadge.label}</span>
           {data.tier === 'curated' ? (
             <span class="hero-badge hero-badge-curated">Curated by Sarah</span>

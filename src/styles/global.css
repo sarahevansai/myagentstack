@@ -214,6 +214,7 @@ img, svg { display: block; max-width: 100%; }
   letter-spacing: 0.1em;
   padding: 4px 10px;
   border-radius: 999px;
+  white-space: nowrap;
   background: color-mix(in oklab, var(--cat-color, var(--violet-light)) 14%, transparent);
   border: 1px solid color-mix(in oklab, var(--cat-color, var(--violet-light)) 38%, transparent);
   color: var(--cat-color, var(--violet-light));
@@ -230,6 +231,7 @@ img, svg { display: block; max-width: 100%; }
   letter-spacing: 0.08em;
   padding: 3px 8px;
   border-radius: 999px;
+  white-space: nowrap;
 }
 .price-free        { background: rgba(74, 222, 128, 0.12); color: var(--price-free); border: 1px solid rgba(74, 222, 128, 0.4); }
 .price-freemium    { background: rgba(52, 211, 153, 0.12); color: var(--price-freemium); border: 1px solid rgba(52, 211, 153, 0.4); }
