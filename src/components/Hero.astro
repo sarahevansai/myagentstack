@@ -3,7 +3,7 @@ interface Props {
   eyebrow?: string;
   title: string;
   highlight?: string;
-  subtitle: string;
+  subtitle?: string;
   primaryCta?: { href: string; label: string };
   secondaryCta?: { href: string; label: string };
 }
@@ -18,7 +18,7 @@ const { eyebrow, title, highlight, subtitle, primaryCta, secondaryCta } = Astro.
       {title}
       {highlight && <span class="gradient-text">{highlight}</span>}
     </h1>
-    <p class="hero-sub">{subtitle}</p>
+    {subtitle && <p class="hero-sub">{subtitle}</p>}
     {(primaryCta || secondaryCta) && (
       <div class="hero-ctas">
         {primaryCta && (
