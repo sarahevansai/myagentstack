@@ -10,6 +10,7 @@ ctaText: "Open in ChatGPT"
 tier: "curated"
 status: "live"
 featured: true
+rating: 4.5
 keywords:
   - "AI press release"
   - "GenAI press release"

@@ -10,6 +10,7 @@ ctaText: "View on GitHub"
 tier: "curated"
 status: "live"
 featured: false
+rating: 4.5
 keywords:
   - "AI morning brief"
   - "AI intelligence brief"

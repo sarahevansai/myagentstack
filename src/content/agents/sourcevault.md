@@ -10,6 +10,7 @@ ctaText: "Open SourceVault"
 tier: "curated"
 status: "live"
 featured: true
+rating: 5
 keywords:
   - "AI source research"
   - "expert source AI"

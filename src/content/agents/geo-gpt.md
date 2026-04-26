@@ -10,6 +10,7 @@ ctaText: "Open in ChatGPT"
 tier: "curated"
 status: "live"
 featured: true
+rating: 5
 keywords:
   - "AI visibility engine"
   - "GEO audit"

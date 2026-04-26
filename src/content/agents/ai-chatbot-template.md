@@ -10,6 +10,7 @@ ctaText: "View on GitHub"
 tier: "curated"
 status: "live"
 featured: false
+rating: 4
 keywords:
   - "AI chatbot template"
   - "digital twin AI"

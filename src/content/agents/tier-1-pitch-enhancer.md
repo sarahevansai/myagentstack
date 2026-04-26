@@ -10,6 +10,7 @@ ctaText: "Get the blueprint"
 tier: "curated"
 status: "live"
 featured: true
+rating: 4.5
 keywords:
   - "AI media pitch"
   - "journalist pitch AI"

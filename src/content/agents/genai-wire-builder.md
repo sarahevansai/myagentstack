@@ -10,6 +10,7 @@ ctaText: "View on GitHub"
 tier: "curated"
 status: "live"
 featured: true
+rating: 4.5
 keywords:
   - "AI wire release"
   - "AI press release format"

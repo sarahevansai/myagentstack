@@ -24,6 +24,7 @@ const agents = defineCollection({
     ctaUrl: z.string().default('https://asksarah.ai'),
     ctaText: z.string().default('Get this for your brand'),
     featured: z.boolean().default(false),
+    rating: z.number().min(0).max(5).optional(),
     tier: z.enum(['curated', 'community']).default('curated'),
     status: z.enum(['live', 'pending']).default('live'),
     source: z.string().optional(),

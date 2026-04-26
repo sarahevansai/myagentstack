@@ -1,0 +1,113 @@
+---
+import RobotIcon from './RobotIcon.astro';
+
+interface Props {
+  rating?: number; // 0-5 in 0.5 increments
+  size?: 'sm' | 'md' | 'lg';
+  showValue?: boolean;
+  showLabel?: boolean;
+}
+
+const { rating, size = 'md', showValue = true, showLabel = false } = Astro.props;
+
+const sizes = { sm: 14, md: 18, lg: 28 };
+const px = sizes[size];
+
+// Pre-compute fill width for each of the 5 slots based on rating value
+const slots = rating != null
+  ? Array.from({ length: 5 }, (_, i) => {
+      const v = Math.max(0, Math.min(1, rating - i));
+      return Math.round(v * 100);
+    })
+  : null;
+---
+
+{slots ? (
+  <div class={`rating rating-${size}`} aria-label={`Rated ${rating} out of 5`}>
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+      <defs>
+        <linearGradient id="robot-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#a78bfa" />
+          <stop offset="100%" stop-color="#22d3ee" />
+        </linearGradient>
+      </defs>
+    </svg>
+    <div class="robots" style={`--robot-size: ${px}px`}>
+      {slots.map((pct) => (
+        <span class="slot" aria-hidden="true">
+          <span class="slot-empty">
+            <RobotIcon />
+          </span>
+          <span class="slot-fill" style={`width: ${pct}%`}>
+            <RobotIcon gradientId="robot-grad" />
+          </span>
+        </span>
+      ))}
+    </div>
+    {showValue && <span class="rating-value">{rating!.toFixed(1)}/5</span>}
+    {showLabel && <span class="rating-label">Curator rating</span>}
+  </div>
+) : (
+  <span class={`rating-empty rating-${size}`}>Not yet rated</span>
+)}
+
+<style>
+  .rating {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .robots {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+  }
+  .slot {
+    position: relative;
+    display: inline-block;
+    width: var(--robot-size);
+    height: var(--robot-size);
+    line-height: 0;
+  }
+  .slot-empty,
+  .slot-fill {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    display: block;
+  }
+  .slot-empty {
+    color: var(--text-muted);
+    opacity: 0.35;
+  }
+  .slot-fill { /* width set inline via style */ }
+  .slot :global(.robot-icon) {
+    width: var(--robot-size);
+    height: var(--robot-size);
+    display: block;
+  }
+  .rating-value {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: 0.04em;
+  }
+  .rating-label {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+  }
+  .rating-empty {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+  }
+  .rating-sm .rating-value { font-size: 0.7rem; }
+  .rating-lg .rating-value { font-size: 0.95rem; }
+  .rating-lg .rating-label { font-size: 0.75rem; }
+</style>

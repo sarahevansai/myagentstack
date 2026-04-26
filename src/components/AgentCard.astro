@@ -1,4 +1,6 @@
 ---
+import Rating from './Rating.astro';
+
 interface Props {
   href: string;
   name: string;
@@ -7,6 +9,7 @@ interface Props {
   categoryLabel: string;
   featured?: boolean;
   tier?: 'curated' | 'community';
+  rating?: number;
 }
 
 const {
@@ -17,6 +20,7 @@ const {
   categoryLabel,
   featured = false,
   tier = 'curated',
+  rating,
 } = Astro.props;
 ---
 
@@ -35,7 +39,10 @@ const {
   </div>
   <h3 class="agent-name">{name}</h3>
   <p class="agent-tagline">{tagline}</p>
-  <span class="agent-cta">View agent →</span>
+  <div class="agent-foot">
+    <Rating rating={rating} size="sm" />
+    <span class="agent-cta">View →</span>
+  </div>
 </a>
 
 <style>
@@ -92,6 +99,15 @@ const {
     margin: 0;
     flex: 1;
   }
+  .agent-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: var(--sp-sm);
+    padding-top: var(--sp-sm);
+    border-top: 1px solid var(--border);
+  }
   .agent-cta {
     font-family: var(--font-mono);
     font-size: 0.75rem;
@@ -99,7 +115,6 @@ const {
     text-transform: uppercase;
     letter-spacing: 0.1em;
     color: var(--cyan-light);
-    margin-top: var(--sp-sm);
   }
   .agent-card:hover .agent-name { color: var(--white); }
   .agent-card:hover .agent-cta { color: var(--violet-light); }

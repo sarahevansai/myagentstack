@@ -10,6 +10,7 @@ ctaText: "Get the blueprint"
 tier: "curated"
 status: "live"
 featured: false
+rating: 4.5
 keywords:
   - "AI chief of staff"
   - "AI operator"

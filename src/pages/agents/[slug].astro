@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import Rating from '../../components/Rating.astro';
 
 export async function getStaticPaths() {
   const agents = (await getCollection('agents')).filter(
@@ -105,6 +106,9 @@ const jsonLd = [
         </div>
         <h1>{data.name}</h1>
         <p class="agent-tag">{data.tagline}</p>
+        <div class="hero-rating">
+          <Rating rating={data.rating} size="lg" showValue={true} showLabel={true} />
+        </div>
         <div class="hero-ctas">
           <a class="btn btn-primary" href={data.ctaUrl} rel="noopener">
             {data.ctaText}
@@ -247,6 +251,9 @@ const jsonLd = [
     color: var(--text);
     margin: 0;
     line-height: 1.4;
+  }
+  .hero-rating {
+    margin-top: 4px;
   }
   .hero-ctas {
     display: flex;

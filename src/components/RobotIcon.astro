@@ -1,0 +1,41 @@
+---
+// Inline SVG robot icon — uses currentColor so any wrapper can color it.
+// Supports an optional `gradientId` to fill from a brand violet→cyan gradient.
+interface Props {
+  class?: string;
+  gradientId?: string; // when set, fills body via this gradient id (must be defined in same DOM)
+  ariaLabel?: string;
+}
+const { class: className = '', gradientId, ariaLabel } = Astro.props;
+const fill = gradientId ? `url(#${gradientId})` : 'currentColor';
+---
+
+<svg
+  class={`robot-icon ${className}`}
+  viewBox="0 0 24 24"
+  xmlns="http://www.w3.org/2000/svg"
+  role={ariaLabel ? 'img' : undefined}
+  aria-label={ariaLabel}
+  aria-hidden={ariaLabel ? undefined : 'true'}
+>
+  {/* Antenna */}
+  <line x1="12" y1="2" x2="12" y2="5" stroke={fill} stroke-width="1.6" stroke-linecap="round" />
+  <circle cx="12" cy="2.2" r="1.1" fill={fill} />
+  {/* Head body */}
+  <rect x="4.5" y="5.5" width="15" height="12.5" rx="3" ry="3" stroke={fill} stroke-width="1.6" fill="none" />
+  {/* Side antennas / ears */}
+  <rect x="3" y="9.5" width="1.8" height="4.5" rx="0.9" fill={fill} />
+  <rect x="19.2" y="9.5" width="1.8" height="4.5" rx="0.9" fill={fill} />
+  {/* Eyes */}
+  <circle cx="9" cy="11" r="1.4" fill={fill} />
+  <circle cx="15" cy="11" r="1.4" fill={fill} />
+  {/* Mouth */}
+  <rect x="8.5" y="14.6" width="7" height="1.6" rx="0.8" fill={fill} />
+</svg>
+
+<style>
+  .robot-icon {
+    display: inline-block;
+    vertical-align: middle;
+  }
+</style>

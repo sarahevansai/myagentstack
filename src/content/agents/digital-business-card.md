@@ -10,6 +10,7 @@ ctaText: "View on GitHub"
 tier: "curated"
 status: "live"
 featured: false
+rating: 3.5
 keywords:
   - "digital business card"
   - "QR business card"
