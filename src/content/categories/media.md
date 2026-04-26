@@ -1,15 +1,15 @@
 ---
 name: "Media Agents"
-tagline: "AI agents for placement, syndication, and distribution."
-description: "Agents that get content placed and indexed — wire syndication, GlobeNewswire optimization, publisher submission, distribution QA. The last-mile work between writing it and the world seeing it."
+tagline: "AI agents and tools for wire distribution, media placement, and broadcast."
+description: "AI agents that handle the last-mile work between writing and reaching an audience — wire formatting for AI citation, distribution optimization, and media-tech AI products. Generic platforms are not listed; only specific AI agents and tools."
 order: 7
 icon: "broadcast"
 keywords:
-  - "AI media placement"
+  - "AI media agent"
   - "AI press release distribution"
-  - "AI wire submission"
-  - "GlobeNewswire AI"
-  - "AI media distribution"
+  - "AI wire optimization"
+  - "AI media tools"
+  - "AI broadcast tools"
 ---
 
-Media agents handle the distribution layer — formatting and submitting to wires, optimizing for publisher requirements, QA-ing every field before it goes out. The unglamorous craft of making sure work reaches its audience and gets indexed.
+Media agents on MyAgentStack are specific AI products and tools — not generic wire services or PR platforms. If a media vendor (Muck Rack, Cision, PR Newswire, etc.) has a distinct AI agent or AI tool, that product is what gets listed here.

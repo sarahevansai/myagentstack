@@ -3,7 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
 
 const description =
-  'MyAgentStack is curated by Sarah Evans, founder of Zen Media — an opinionated, practitioner-led directory of AI agents for marketing, comms, and media.';
+  'MyAgentStack is curated by Sarah Evans — creator of asksarah.ai and Partner at Zen Media. The opinionated, practitioner-led directory of AI agents for marketing, comms, and media.';
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -14,7 +14,7 @@ const jsonLd = {
   mainEntity: {
     '@type': 'Person',
     name: 'Sarah Evans',
-    jobTitle: 'Founder, Zen Media',
+    jobTitle: 'Creator of asksarah.ai · Partner, Zen Media',
     url: 'https://asksarah.ai',
     sameAs: ['https://zenmedia.com', 'https://www.linkedin.com/in/sarahevans/'],
   },
@@ -26,7 +26,7 @@ const jsonLd = {
     eyebrow="About"
     title="Practitioner-led, not"
     highlight=" platform-led."
-    subtitle="MyAgentStack is the opinionated directory of AI agents for marketing, comms, and media — curated by Sarah Evans, founder of Zen Media."
+    subtitle="MyAgentStack is the opinionated directory of AI agents for marketing, comms, and media — curated by Sarah Evans, creator of asksarah.ai and Partner at Zen Media."
   />
 
   <section class="tight">
@@ -35,14 +35,23 @@ const jsonLd = {
         <h2>Why this exists</h2>
         <p>
           AI directories like agent.ai are general-purpose and platform-built. They show what's possible. MyAgentStack
-          shows what actually ships — the agents that show up in real client work at Zen Media every week.
+          shows what actually ships — the agents that show up in real client work every week.
         </p>
 
         <h2>Who curates it</h2>
         <p>
-          <strong>Sarah Evans</strong> is the founder of Zen Media, a 20+ year practitioner in PR, comms, and marketing,
-          and the operator behind Published Monthly™ — Zen's flagship AI visibility program. Every agent listed here has
-          been used to deliver real client work.
+          <strong>Sarah Evans</strong> is the creator of <a href="https://asksarah.ai" rel="noopener">asksarah.ai</a> and
+          Partner at <a href="https://zenmedia.com" rel="noopener">Zen Media</a>. With 20+ years building at the edge of every
+          platform shift, she created <em>#journchat</em> — the first industry chat connecting journalists and PR on Twitter —
+          authored <em>PR@ctical</em>, was named the #1 Business Writer on HackerNoon, and is a 3× Propel 100 Most Influential
+          PR Pro and CBS Las Vegas tech contributor.
+        </p>
+        <p>
+          Curated entries on MyAgentStack include the AI tools she ships publicly via
+          <a href="https://asksarah.ai/tools" rel="noopener">asksarah.ai/tools</a>,
+          <a href="https://github.com/sarahevansai" rel="noopener">github.com/sarahevansai</a>, and her
+          <a href="https://stan.store/asksarahevans" rel="noopener">Stan Store</a>. Her tagline says it best:
+          <em>"Challenging the speed of change."</em>
         </p>
 
         <h2>What gets in</h2>
@@ -55,7 +64,7 @@ const jsonLd = {
         <h2>Want your agent listed?</h2>
         <p>
           MyAgentStack is curated, not open. If you've built something marketers, comms, or media teams should know
-          about, reach out via <a href="https://asksarah.ai" rel="noopener">asksarah.ai</a>.
+          about, <a href="/submit">submit it here</a> — every submission is reviewed personally.
         </p>
       </div>
 
@@ -63,12 +72,21 @@ const jsonLd = {
         <div class="card">
           <h4 class="meta-h">Curated by</h4>
           <p><a href="https://asksarah.ai" rel="noopener">Sarah Evans</a></p>
-          <p><a href="https://zenmedia.com" rel="noopener">Zen Media</a></p>
+          <p class="muted small">Creator, asksarah.ai</p>
+          <p class="muted small">Partner, Zen Media</p>
         </div>
         <div class="card">
-          <h4 class="meta-h">Programs</h4>
-          <p>Published Monthly™</p>
-          <p>AI Visibility Strategy</p>
+          <h4 class="meta-h">Recognition</h4>
+          <p class="small">#1 Business Writer, HackerNoon</p>
+          <p class="small">3× Propel 100 Most Influential PR</p>
+          <p class="small">Creator of #journchat</p>
+          <p class="small">Author of PR@ctical</p>
+        </div>
+        <div class="card">
+          <h4 class="meta-h">Where to find her tools</h4>
+          <p class="small"><a href="https://asksarah.ai/tools" rel="noopener">asksarah.ai/tools</a></p>
+          <p class="small"><a href="https://github.com/sarahevansai" rel="noopener">github.com/sarahevansai</a></p>
+          <p class="small"><a href="https://stan.store/asksarahevans" rel="noopener">stan.store/asksarahevans</a></p>
         </div>
       </aside>
     </div>
@@ -109,6 +127,8 @@ const jsonLd = {
     margin: 4px 0;
     font-size: 0.95rem;
   }
+  .about-side .small { font-size: 0.85rem; }
+  .about-side .muted { color: var(--text-muted); }
   @media (max-width: 800px) {
     .about-grid { grid-template-columns: 1fr; }
   }

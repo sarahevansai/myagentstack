@@ -28,7 +28,7 @@ const curatedCount = allAgents.filter((a) => a.data.tier === 'curated').length;
 const communityCount = allAgents.filter((a) => a.data.tier === 'community').length;
 
 const description =
-  'The opinionated directory of AI agents for marketing, comms, and media — curated by Sarah Evans. Browse comms agents, content agents, social agents, SEO and GEO agents, martech agents, brand agents, and media agents.';
+  'The directory of AI agents, vibecoded products, and AI tools for marketing, comms, and media. Browse comms agents, content agents, social agents, SEO and GEO agents, martech agents, brand agents, and media agents — all with real public URLs.';
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -61,44 +61,36 @@ const jsonLd = {
   jsonLd={jsonLd}
 >
   <Hero
-    eyebrow="The marketing AI directory"
-    title="AI agents for marketing, comms, and"
-    highlight=" media."
-    subtitle="The opinionated directory of AI agents that ship real marketing work — curated by Sarah Evans (Zen Media). Comms, content, social, SEO/GEO, martech, brand, and media agents, all in one stack."
+    eyebrow={`${allAgents.length} AI agents · ${categories.length} categories · all with working URLs`}
+    title="AI agents, vibecoded products, and tools for"
+    highlight=" marketing teams."
+    subtitle="A focused directory of real AI agents — every one with a working public URL. Comms, content, social, SEO/GEO, martech, brand, and media."
     primaryCta={{ href: '/agents', label: 'Browse all agents' }}
-    secondaryCta={{ href: '#categories', label: 'See categories' }}
+    secondaryCta={{ href: '/submit', label: 'Submit yours' }}
   />
 
-  <section id="categories" class="tight">
+  <!-- Quick category strip — visible immediately, scrollable on mobile -->
+  <section class="category-strip">
     <div class="container">
-      <div class="section-head">
-        <span class="eyebrow">Browse by category</span>
-        <h2>Every category. One stack.</h2>
-        <p class="muted lead">
-          Seven categories cover the work of modern marketing — from pitching journalists to ranking in AI Overviews.
-          Every agent is vetted for actual delivery, not demos.
-        </p>
-      </div>
-      <div class="grid grid-categories mt-lg">
+      <div class="strip-row" role="navigation" aria-label="Categories">
         {categories.map((c) => (
-          <CategoryCard
-            href={`/categories/${c.id}`}
-            name={c.data.name}
-            tagline={c.data.tagline}
-            count={agentCounts[c.id] ?? 0}
-          />
+          <a class="strip-pill" href={`/categories/${c.id}`}>
+            <span class="strip-name">{c.data.name}</span>
+            <span class="strip-count">{agentCounts[c.id] ?? 0}</span>
+          </a>
         ))}
       </div>
     </div>
   </section>
 
+  <!-- Featured agents — show real product up high so visitors see what's here -->
   <section class="featured-section">
     <div class="container">
       <div class="section-head">
         <span class="eyebrow">Featured agents</span>
         <h2>Start with these.</h2>
         <p class="muted lead">
-          The flagship lineup — the agents that show up in real client engagements at Zen Media every week.
+          Hand-picked AI agents — free or open-source where possible. Every link goes to a working tool.
         </p>
       </div>
       <div class="grid grid-agents mt-lg">
@@ -114,8 +106,31 @@ const jsonLd = {
           />
         ))}
       </div>
-      <div class="cta-row mt-xl">
+      <div class="cta-row mt-lg">
         <a class="btn btn-ghost" href="/agents">See all {allAgents.length} agents →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Full category grid — for browsers who want every option -->
+  <section id="categories" class="tight">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Browse by category</span>
+        <h2>Every category. One stack.</h2>
+        <p class="muted lead">
+          Seven categories cover the work of modern marketing — from pitching journalists to ranking in AI Overviews.
+        </p>
+      </div>
+      <div class="grid grid-categories mt-lg">
+        {categories.map((c) => (
+          <CategoryCard
+            href={`/categories/${c.id}`}
+            name={c.data.name}
+            tagline={c.data.tagline}
+            count={agentCounts[c.id] ?? 0}
+          />
+        ))}
       </div>
     </div>
   </section>
@@ -124,14 +139,14 @@ const jsonLd = {
     <div class="container why-grid">
       <div>
         <span class="eyebrow">Why MyAgentStack</span>
-        <h2>Practitioner-led, not platform-led.</h2>
+        <h2>Real agents. Real URLs. Tiered honestly.</h2>
         <p class="muted">
-          Most AI agent directories are built by platform companies showcasing what's possible. MyAgentStack is built by
-          a practitioner showcasing what actually ships. Every agent has been used to deliver client work — not just
-          demoed in a launch video.
+          Other directories pad their counts with services, platforms, and "AI-powered" SaaS. MyAgentStack lists only
+          actual AI agents, vibecoded products, and AI tools — each with a working public URL.
         </p>
         <p class="muted">
-          That's the trade-off you're choosing: fewer agents, higher signal.
+          <strong>Curated</strong> entries are tools we use ourselves. <strong>Community</strong> entries are indexed
+          but not vouched for. The split is honest, so you can spend your time on what actually works.
         </p>
       </div>
       <div class="why-stats">
@@ -160,8 +175,54 @@ const jsonLd = {
     font-size: 1.05rem;
     margin-top: var(--sp-sm);
   }
+
+  /* Category strip — keeps categories visible above the fold */
+  .category-strip {
+    padding: 0 0 var(--sp-md);
+    border-bottom: 1px solid var(--border);
+  }
+  .strip-row {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 4px 0;
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
+  }
+  .strip-row::-webkit-scrollbar { height: 4px; }
+  .strip-row::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+  .strip-pill {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-size: 0.9rem;
+    color: var(--text);
+    text-decoration: none;
+    transition: all 0.15s ease;
+  }
+  .strip-pill:hover {
+    background: var(--card-hover);
+    border-color: var(--border-strong);
+    color: var(--white);
+  }
+  .strip-name { font-weight: 500; }
+  .strip-count {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--violet-light);
+    background: rgba(124, 58, 237, 0.15);
+    padding: 2px 8px;
+    border-radius: 999px;
+  }
+
   .featured-section {
     background: linear-gradient(180deg, transparent, rgba(124, 58, 237, 0.04), transparent);
+    padding-top: var(--sp-xl);
   }
   .cta-row {
     display: flex;
