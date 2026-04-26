@@ -29,6 +29,7 @@ const agents = defineCollection({
     status: z.enum(['live', 'pending']).default('live'),
     source: z.string().optional(),
     sourceUrl: z.string().optional(),
+    dateAdded: z.string().optional(),
     keywords: z.array(z.string()).optional(),
   }),
 });

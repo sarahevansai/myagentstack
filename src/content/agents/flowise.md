@@ -10,6 +10,7 @@ ctaText: "Visit flowiseai.com"
 tier: "community"
 status: "live"
 featured: false
+dateAdded: "2026-04-25"
 source: "GitHub"
 sourceUrl: "https://github.com/FlowiseAI/Flowise"
 keywords:

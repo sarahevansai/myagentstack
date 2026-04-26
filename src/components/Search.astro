@@ -1,0 +1,275 @@
+---
+import { getCollection } from 'astro:content';
+
+const agents = (await getCollection('agents'))
+  .filter((a) => a.data.status === 'live')
+  .map((a) => ({
+    slug: a.id,
+    name: a.data.name,
+    tagline: a.data.tagline,
+    category: a.data.category,
+    tier: a.data.tier,
+    // Compact searchable string
+    haystack: [
+      a.data.name,
+      a.data.tagline,
+      a.data.description,
+      a.data.category,
+      ...(a.data.keywords ?? []),
+    ]
+      .filter(Boolean)
+      .join(' ')
+      .toLowerCase(),
+  }));
+
+const categories = await getCollection('categories');
+const categoryLabels: Record<string, string> = Object.fromEntries(
+  categories.map((c) => [c.id, c.data.name])
+);
+---
+
+<div class="search">
+  <div class="search-wrap">
+    <svg class="search-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+      <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" fill="none"/>
+      <line x1="16.5" y1="16.5" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+    <input
+      type="search"
+      id="agent-search"
+      placeholder="Search agents — try 'linkedin' or 'press release'"
+      autocomplete="off"
+      aria-label="Search agents"
+      aria-controls="agent-search-results"
+      aria-expanded="false"
+    />
+    <span class="search-kbd" aria-hidden="true">⌘K</span>
+  </div>
+  <ul id="agent-search-results" class="search-results" role="listbox" hidden></ul>
+</div>
+
+<script
+  type="application/json"
+  id="agent-search-data"
+  is:inline
+  set:html={JSON.stringify({ agents, categoryLabels })}
+/>
+
+<script is:inline>
+  (function () {
+    const dataEl = document.getElementById('agent-search-data');
+    if (!dataEl) return;
+    const { agents, categoryLabels } = JSON.parse(dataEl.textContent || '{}');
+    const input = document.getElementById('agent-search');
+    const results = document.getElementById('agent-search-results');
+    if (!input || !results) return;
+
+    let activeIdx = -1;
+    let currentMatches = [];
+
+    function score(agent, q) {
+      const idx = agent.haystack.indexOf(q);
+      if (idx === -1) return -1;
+      // Boost name match
+      const nameIdx = agent.name.toLowerCase().indexOf(q);
+      if (nameIdx === 0) return 1000 - nameIdx;
+      if (nameIdx > -1) return 500 - nameIdx;
+      // Boost tagline match
+      const tagIdx = agent.tagline.toLowerCase().indexOf(q);
+      if (tagIdx > -1) return 200 - tagIdx;
+      return 100 - idx;
+    }
+
+    function render(matches) {
+      currentMatches = matches;
+      activeIdx = -1;
+      if (matches.length === 0) {
+        results.innerHTML =
+          '<li class="search-empty">No agents match. Try a different word — or <a href="/submit">submit one</a>.</li>';
+        results.hidden = false;
+        input.setAttribute('aria-expanded', 'true');
+        return;
+      }
+      results.innerHTML = matches
+        .slice(0, 8)
+        .map(
+          (a, i) => `
+        <li role="option" data-index="${i}">
+          <a href="/agents/${a.slug}" class="search-result">
+            <span class="search-name">${a.name}</span>
+            <span class="search-cat">${categoryLabels[a.category] || a.category}</span>
+            <span class="search-tag">${a.tagline}</span>
+          </a>
+        </li>`
+        )
+        .join('');
+      results.hidden = false;
+      input.setAttribute('aria-expanded', 'true');
+    }
+
+    function clear() {
+      results.hidden = true;
+      results.innerHTML = '';
+      input.setAttribute('aria-expanded', 'false');
+      activeIdx = -1;
+    }
+
+    input.addEventListener('input', () => {
+      const q = input.value.trim().toLowerCase();
+      if (q.length < 2) {
+        clear();
+        return;
+      }
+      const matches = agents
+        .map((a) => ({ ...a, _score: score(a, q) }))
+        .filter((a) => a._score > 0)
+        .sort((a, b) => b._score - a._score);
+      render(matches);
+    });
+
+    input.addEventListener('keydown', (e) => {
+      const items = results.querySelectorAll('li[data-index]');
+      if (e.key === 'ArrowDown' && items.length) {
+        e.preventDefault();
+        activeIdx = Math.min(activeIdx + 1, items.length - 1);
+        items.forEach((el, i) => el.classList.toggle('is-active', i === activeIdx));
+      } else if (e.key === 'ArrowUp' && items.length) {
+        e.preventDefault();
+        activeIdx = Math.max(activeIdx - 1, 0);
+        items.forEach((el, i) => el.classList.toggle('is-active', i === activeIdx));
+      } else if (e.key === 'Enter' && activeIdx > -1 && currentMatches[activeIdx]) {
+        e.preventDefault();
+        window.location.href = '/agents/' + currentMatches[activeIdx].slug;
+      } else if (e.key === 'Escape') {
+        clear();
+        input.blur();
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!input.contains(e.target) && !results.contains(e.target)) clear();
+    });
+
+    // Cmd/Ctrl + K to focus
+    document.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        input.focus();
+        input.select();
+      }
+    });
+  })();
+</script>
+
+<style>
+  .search {
+    position: relative;
+    width: 100%;
+    max-width: 640px;
+  }
+  .search-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .search-icon {
+    position: absolute;
+    left: 16px;
+    color: var(--text-muted);
+    pointer-events: none;
+  }
+  #agent-search {
+    width: 100%;
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--white);
+    border-radius: var(--radius-md);
+    padding: 14px 70px 14px 44px;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+  #agent-search::placeholder {
+    color: var(--text-muted);
+  }
+  #agent-search:focus {
+    outline: none;
+    background: var(--card-hover);
+    border-color: var(--violet-light);
+  }
+  .search-kbd {
+    position: absolute;
+    right: 12px;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    background: rgba(0, 0, 0, 0.3);
+    padding: 3px 8px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    pointer-events: none;
+  }
+  .search-results {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    margin: 0;
+    padding: 8px;
+    list-style: none;
+    background: var(--card);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-md);
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.5);
+    z-index: 100;
+    max-height: 480px;
+    overflow-y: auto;
+  }
+  .search-results li {
+    margin: 0;
+    border-radius: var(--radius-sm);
+  }
+  .search-results li.is-active,
+  .search-results li:hover {
+    background: rgba(124, 58, 237, 0.12);
+  }
+  .search-result {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      'name cat'
+      'tag tag';
+    gap: 4px 12px;
+    padding: 12px 14px;
+    color: inherit;
+    text-decoration: none;
+  }
+  .search-name {
+    grid-area: name;
+    font-weight: 600;
+    color: var(--white);
+    font-size: 0.95rem;
+  }
+  .search-cat {
+    grid-area: cat;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--violet-light);
+  }
+  .search-tag {
+    grid-area: tag;
+    color: var(--text);
+    font-size: 0.85rem;
+  }
+  .search-empty {
+    padding: 16px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    text-align: center;
+  }
+  .search-empty a {
+    color: var(--cyan-light);
+  }
+</style>

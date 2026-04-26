@@ -4,6 +4,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
 import CategoryCard from '../components/CategoryCard.astro';
 import AgentCard from '../components/AgentCard.astro';
+import Search from '../components/Search.astro';
 
 const categories = (await getCollection('categories')).sort(
   (a, b) => a.data.order - b.data.order
@@ -26,6 +27,16 @@ for (const a of allAgents) {
 
 const curatedCount = allAgents.filter((a) => a.data.tier === 'curated').length;
 const communityCount = allAgents.filter((a) => a.data.tier === 'community').length;
+
+// Recently added — sort by dateAdded desc, fall back to alpha for ties
+const recentlyAdded = allAgents
+  .filter((a) => a.data.dateAdded)
+  .sort((a, b) => {
+    const da = a.data.dateAdded ?? '';
+    const db = b.data.dateAdded ?? '';
+    return db.localeCompare(da);
+  })
+  .slice(0, 4);
 
 const description =
   'The directory of AI agents, vibecoded products, and AI tools for marketing, comms, and media. Browse comms agents, content agents, social agents, SEO and GEO agents, martech agents, brand agents, and media agents — all with real public URLs.';
@@ -61,12 +72,14 @@ const jsonLd = {
   jsonLd={jsonLd}
 >
   <Hero
-    title="AI agents, vibecoded products, and tools for"
-    highlight=" marketing teams."
-    subtitle="A focused directory of real AI agents — every one with a working public URL. Comms, content, social, SEO/GEO, martech, brand, and media."
+    title="The #1 marketplace for"
+    highlight=" marketing, PR, comms, and media AI agents."
+    subtitle="Vetted directory. Every agent has a working public URL. Curated picks alongside community-listed tools."
     primaryCta={{ href: '/agents', label: 'Browse all agents' }}
     secondaryCta={{ href: '/submit', label: 'Submit yours' }}
-  />
+  >
+    <Search />
+  </Hero>
 
   <!-- Quick category strip — visible immediately, scrollable on mobile -->
   <section class="category-strip">
@@ -80,6 +93,31 @@ const jsonLd = {
       </div>
     </div>
   </section>
+
+  {recentlyAdded.length > 0 && (
+    <section class="recent-section">
+      <div class="container">
+        <div class="recent-head">
+          <span class="eyebrow">Recently added</span>
+          <a class="recent-link" href="/agents">View all →</a>
+        </div>
+        <div class="grid grid-agents mt-md">
+          {recentlyAdded.map((a) => (
+            <AgentCard
+              href={`/agents/${a.id}`}
+              name={a.data.name}
+              tagline={a.data.tagline}
+              category={a.data.category}
+              categoryLabel={categoryLabels[a.data.category] ?? a.data.category}
+              featured={a.data.featured}
+              tier={a.data.tier}
+              rating={a.data.rating}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
 
   <!-- Featured agents — show real product up high so visitors see what's here -->
   <section class="featured-section">
@@ -130,22 +168,6 @@ const jsonLd = {
     </div>
   </section>
 
-  <section class="why-section">
-    <div class="container">
-      <div class="why-content">
-        <span class="eyebrow">Why MyAgentStack</span>
-        <h2>Real agents. Real URLs. Tiered honestly.</h2>
-        <p class="muted">
-          Other directories pad their lists with services, platforms, and "AI-powered" SaaS. MyAgentStack lists only
-          actual AI agents, vibecoded products, and AI tools — each with a working public URL.
-        </p>
-        <p class="muted">
-          <strong>Curated</strong> entries are tools we use ourselves. <strong>Community</strong> entries are indexed
-          but not vouched for. The split is honest, so you can spend your time on what actually works.
-        </p>
-      </div>
-    </div>
-  </section>
 </BaseLayout>
 
 <style>
@@ -192,6 +214,25 @@ const jsonLd = {
     color: var(--white);
   }
   .strip-name { font-weight: 500; }
+  .recent-section {
+    padding: var(--sp-xl) 0 var(--sp-md);
+  }
+  .recent-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-sm);
+  }
+  .recent-link {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--cyan-light);
+  }
+  .recent-link:hover { color: var(--violet-light); }
+
   .featured-section {
     background: linear-gradient(180deg, transparent, rgba(124, 58, 237, 0.04), transparent);
     padding-top: var(--sp-xl);

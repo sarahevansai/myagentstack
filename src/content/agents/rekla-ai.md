@@ -10,6 +10,7 @@ ctaText: "Visit rekla.ai"
 tier: "community"
 status: "live"
 featured: false
+dateAdded: "2026-04-25"
 source: "Web research"
 keywords:
   - "Rekla AI"

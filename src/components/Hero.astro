@@ -19,6 +19,7 @@ const { eyebrow, title, highlight, subtitle, primaryCta, secondaryCta } = Astro.
       {highlight && <span class="gradient-text">{highlight}</span>}
     </h1>
     {subtitle && <p class="hero-sub">{subtitle}</p>}
+    <slot />
     {(primaryCta || secondaryCta) && (
       <div class="hero-ctas">
         {primaryCta && (

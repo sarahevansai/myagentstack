@@ -10,6 +10,7 @@ ctaText: "Visit boostbot.ai"
 tier: "community"
 status: "live"
 featured: false
+dateAdded: "2026-04-25"
 source: "Product Hunt"
 sourceUrl: "https://www.producthunt.com/products/boostbot"
 keywords:

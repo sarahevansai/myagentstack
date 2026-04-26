@@ -10,6 +10,7 @@ ctaText: "Try ZAVI"
 tier: "curated"
 status: "live"
 featured: true
+dateAdded: "2026-04-26"
 rating: 5
 keywords:
   - "ZAVI"
