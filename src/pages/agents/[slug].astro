@@ -1,0 +1,335 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const agents = (await getCollection('agents')).filter(
+    (a) => a.data.status === 'live'
+  );
+  const categories = await getCollection('categories');
+  return agents.map((agent) => ({
+    params: { slug: agent.id },
+    props: { agent, categories },
+  }));
+}
+
+const { agent, categories } = Astro.props;
+const { Content } = await render(agent);
+const data = agent.data;
+
+const category = categories.find((c) => c.id === data.category);
+const categoryLabel = category?.data.name ?? data.category;
+
+const siblingAgents = (await getCollection('agents'))
+  .filter((a) => a.data.category === data.category && a.id !== agent.id)
+  .slice(0, 3);
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: data.name,
+    applicationCategory: 'BusinessApplication',
+    applicationSubCategory: categoryLabel,
+    description: data.description,
+    url: `https://myagentstack.io/agents/${agent.id}`,
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'USD',
+      availability: 'https://schema.org/InStock',
+      url: data.ctaUrl,
+    },
+    creator: {
+      '@type': 'Person',
+      name: 'Sarah Evans',
+      url: 'https://asksarah.ai',
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Zen Media',
+      url: 'https://zenmedia.com',
+    },
+    keywords: data.keywords?.join(', '),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: 'https://myagentstack.io',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: categoryLabel,
+        item: `https://myagentstack.io/categories/${data.category}`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: data.name,
+        item: `https://myagentstack.io/agents/${agent.id}`,
+      },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title={`${data.name} — AI agent for ${categoryLabel.toLowerCase()}`}
+  description={data.description}
+  jsonLd={jsonLd}
+>
+  <article class="agent-page">
+    <div class="container">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="/">Home</a>
+        <span aria-hidden="true">/</span>
+        <a href={`/categories/${data.category}`}>{categoryLabel}</a>
+        <span aria-hidden="true">/</span>
+        <span class="muted">{data.name}</span>
+      </nav>
+
+      <header class="agent-hero">
+        <div class="hero-tags">
+          <span class="tag">{categoryLabel}</span>
+          {data.tier === 'curated' ? (
+            <span class="hero-badge hero-badge-curated">Curated by Sarah</span>
+          ) : (
+            <span class="hero-badge hero-badge-community">Community-listed</span>
+          )}
+        </div>
+        <h1>{data.name}</h1>
+        <p class="agent-tag">{data.tagline}</p>
+        <div class="hero-ctas">
+          <a class="btn btn-primary" href={data.ctaUrl} rel="noopener">
+            {data.ctaText}
+          </a>
+          <a class="btn btn-ghost" href={`/categories/${data.category}`}>
+            More {categoryLabel.toLowerCase()}
+          </a>
+        </div>
+      </header>
+
+      <div class="agent-grid">
+        <div class="agent-main">
+          <p class="lead">{data.description}</p>
+          <div class="prose">
+            <Content />
+          </div>
+        </div>
+
+        <aside class="agent-meta">
+          <div class="meta-card card">
+            <h4 class="meta-h">Maker</h4>
+            <p>{data.maker}</p>
+          </div>
+
+          {data.useCases && data.useCases.length > 0 && (
+            <div class="meta-card card">
+              <h4 class="meta-h">Use cases</h4>
+              <ul>
+                {data.useCases.map((u) => <li>{u}</li>)}
+              </ul>
+            </div>
+          )}
+
+          {data.inputs && data.inputs.length > 0 && (
+            <div class="meta-card card">
+              <h4 class="meta-h">Inputs</h4>
+              <ul>
+                {data.inputs.map((i) => <li>{i}</li>)}
+              </ul>
+            </div>
+          )}
+
+          {data.output && (
+            <div class="meta-card card">
+              <h4 class="meta-h">Output</h4>
+              <p>{data.output}</p>
+            </div>
+          )}
+
+          <div class="meta-card card">
+            <h4 class="meta-h">Pricing</h4>
+            <p>{data.pricing}</p>
+          </div>
+
+          {data.source && (
+            <div class="meta-card card">
+              <h4 class="meta-h">Indexed from</h4>
+              <p>
+                {data.sourceUrl ? (
+                  <a href={data.sourceUrl} rel="noopener nofollow">{data.source}</a>
+                ) : (
+                  data.source
+                )}
+              </p>
+            </div>
+          )}
+        </aside>
+      </div>
+
+      {siblingAgents.length > 0 && (
+        <section class="related">
+          <h2 class="related-h">More {categoryLabel}</h2>
+          <div class="grid grid-agents">
+            {siblingAgents.map((s) => (
+              <a class="card" href={`/agents/${s.id}`}>
+                <span class="tag">{categoryLabel}</span>
+                <h3 class="rel-name">{s.data.name}</h3>
+                <p class="rel-tag">{s.data.tagline}</p>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .agent-page { padding: var(--sp-xl) 0 var(--sp-3xl); }
+  .crumbs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin-bottom: var(--sp-lg);
+  }
+  .crumbs a { color: var(--text-muted); }
+  .crumbs a:hover { color: var(--violet-light); }
+
+  .agent-hero {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-sm);
+    align-items: flex-start;
+    max-width: 820px;
+    margin-bottom: var(--sp-2xl);
+  }
+  .hero-tags {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .hero-badge {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 4px 10px;
+    border-radius: 999px;
+  }
+  .hero-badge-curated {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.18), rgba(6, 182, 212, 0.18));
+    border: 1px solid rgba(167, 139, 250, 0.4);
+    color: var(--violet-light);
+  }
+  .hero-badge-community {
+    background: rgba(122, 117, 143, 0.12);
+    border: 1px solid rgba(122, 117, 143, 0.25);
+    color: var(--text-muted);
+  }
+  .agent-hero h1 { margin: 0; }
+  .agent-tag {
+    font-size: 1.25rem;
+    color: var(--text);
+    margin: 0;
+    line-height: 1.4;
+  }
+  .hero-ctas {
+    display: flex;
+    gap: var(--sp-sm);
+    flex-wrap: wrap;
+    margin-top: var(--sp-sm);
+  }
+
+  .agent-grid {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: var(--sp-xl);
+  }
+  .agent-main { min-width: 0; }
+  .lead {
+    font-size: 1.15rem;
+    color: var(--text);
+    margin-bottom: var(--sp-lg);
+  }
+  .prose :global(h2) {
+    font-size: 1.5rem;
+    margin-top: var(--sp-lg);
+  }
+  .prose :global(h3) {
+    font-size: 1.2rem;
+    margin-top: var(--sp-md);
+  }
+  .prose :global(p) {
+    color: var(--text);
+    line-height: 1.7;
+  }
+
+  .agent-meta {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-sm);
+  }
+  .meta-card { padding: var(--sp-sm) var(--sp-md); }
+  .meta-h {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--violet-light);
+    margin: 0 0 8px 0;
+  }
+  .meta-card p {
+    margin: 0;
+    color: var(--text);
+    font-size: 0.95rem;
+  }
+  .meta-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .meta-card li {
+    color: var(--text);
+    font-size: 0.9rem;
+    padding-left: 14px;
+    position: relative;
+  }
+  .meta-card li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--violet-light);
+  }
+
+  .related {
+    margin-top: var(--sp-3xl);
+    padding-top: var(--sp-xl);
+    border-top: 1px solid var(--border);
+  }
+  .related-h { margin-bottom: var(--sp-lg); }
+  .rel-name { margin: 8px 0 4px; font-size: 1.1rem; }
+  .rel-tag { color: var(--text); font-size: 0.9rem; margin: 0; }
+
+  @media (max-width: 900px) {
+    .agent-grid { grid-template-columns: 1fr; }
+  }
+</style>

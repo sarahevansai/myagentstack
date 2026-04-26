@@ -1,0 +1,122 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Hero from '../../components/Hero.astro';
+import AgentCard from '../../components/AgentCard.astro';
+
+export async function getStaticPaths() {
+  const categories = await getCollection('categories');
+  return categories.map((category) => ({
+    params: { slug: category.id },
+    props: { category },
+  }));
+}
+
+const { category } = Astro.props;
+const { Content } = await render(category);
+
+const allAgents = await getCollection('agents');
+const agents = allAgents
+  .filter((a) => a.data.category === category.id && a.data.status === 'live')
+  .sort((a, b) => {
+    if (a.data.tier !== b.data.tier) return a.data.tier === 'curated' ? -1 : 1;
+    if (a.data.featured !== b.data.featured) return a.data.featured ? -1 : 1;
+    return a.data.name.localeCompare(b.data.name);
+  });
+
+const description = `${category.data.tagline} ${category.data.description}`;
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: `${category.data.name} — MyAgentStack`,
+    description,
+    url: `https://myagentstack.io/categories/${category.id}`,
+    isPartOf: {
+      '@type': 'WebSite',
+      name: 'MyAgentStack',
+      url: 'https://myagentstack.io',
+    },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: category.data.name,
+    numberOfItems: agents.length,
+    itemListElement: agents.map((a, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: a.data.name,
+      description: a.data.tagline,
+      url: `https://myagentstack.io/agents/${a.id}`,
+    })),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: 'https://myagentstack.io',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: category.data.name,
+        item: `https://myagentstack.io/categories/${category.id}`,
+      },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title={`${category.data.name} — AI agents`}
+  description={description}
+  jsonLd={jsonLd}
+>
+  <Hero
+    eyebrow={`${agents.length} agents`}
+    title={category.data.name}
+    subtitle={category.data.tagline}
+  />
+
+  <section class="tight">
+    <div class="container">
+      <div class="cat-intro">
+        <Content />
+      </div>
+
+      {agents.length > 0 ? (
+        <div class="grid grid-agents mt-lg">
+          {agents.map((a) => (
+            <AgentCard
+              href={`/agents/${a.id}`}
+              name={a.data.name}
+              tagline={a.data.tagline}
+              category={a.data.category}
+              categoryLabel={category.data.name}
+              featured={a.data.featured}
+              tier={a.data.tier}
+            />
+          ))}
+        </div>
+      ) : (
+        <p class="muted">More agents coming soon to this category.</p>
+      )}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .cat-intro {
+    max-width: 720px;
+    color: var(--text);
+    font-size: 1.05rem;
+    line-height: 1.7;
+  }
+  .cat-intro :global(p) { color: var(--text); }
+</style>

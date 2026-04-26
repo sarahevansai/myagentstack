@@ -1,0 +1,115 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+
+const description =
+  'MyAgentStack is curated by Sarah Evans, founder of Zen Media — an opinionated, practitioner-led directory of AI agents for marketing, comms, and media.';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'AboutPage',
+  name: 'About MyAgentStack',
+  description,
+  url: 'https://myagentstack.io/about',
+  mainEntity: {
+    '@type': 'Person',
+    name: 'Sarah Evans',
+    jobTitle: 'Founder, Zen Media',
+    url: 'https://asksarah.ai',
+    sameAs: ['https://zenmedia.com', 'https://www.linkedin.com/in/sarahevans/'],
+  },
+};
+---
+
+<BaseLayout title="About MyAgentStack" description={description} jsonLd={jsonLd}>
+  <Hero
+    eyebrow="About"
+    title="Practitioner-led, not"
+    highlight=" platform-led."
+    subtitle="MyAgentStack is the opinionated directory of AI agents for marketing, comms, and media — curated by Sarah Evans, founder of Zen Media."
+  />
+
+  <section class="tight">
+    <div class="container about-grid">
+      <div class="about-main">
+        <h2>Why this exists</h2>
+        <p>
+          AI directories like agent.ai are general-purpose and platform-built. They show what's possible. MyAgentStack
+          shows what actually ships — the agents that show up in real client work at Zen Media every week.
+        </p>
+
+        <h2>Who curates it</h2>
+        <p>
+          <strong>Sarah Evans</strong> is the founder of Zen Media, a 20+ year practitioner in PR, comms, and marketing,
+          and the operator behind Published Monthly™ — Zen's flagship AI visibility program. Every agent listed here has
+          been used to deliver real client work.
+        </p>
+
+        <h2>What gets in</h2>
+        <p>
+          Agents are added when they meet two tests: (1) they ship work that survives compliance and editor review, and
+          (2) they're used regularly enough to stay calibrated. The bar is high on purpose — every entry should save
+          you a research cycle.
+        </p>
+
+        <h2>Want your agent listed?</h2>
+        <p>
+          MyAgentStack is curated, not open. If you've built something marketers, comms, or media teams should know
+          about, reach out via <a href="https://asksarah.ai" rel="noopener">asksarah.ai</a>.
+        </p>
+      </div>
+
+      <aside class="about-side">
+        <div class="card">
+          <h4 class="meta-h">Curated by</h4>
+          <p><a href="https://asksarah.ai" rel="noopener">Sarah Evans</a></p>
+          <p><a href="https://zenmedia.com" rel="noopener">Zen Media</a></p>
+        </div>
+        <div class="card">
+          <h4 class="meta-h">Programs</h4>
+          <p>Published Monthly™</p>
+          <p>AI Visibility Strategy</p>
+        </div>
+      </aside>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: var(--sp-xl);
+  }
+  .about-main h2 {
+    margin-top: var(--sp-lg);
+    font-size: 1.5rem;
+  }
+  .about-main p {
+    color: var(--text);
+    font-size: 1.05rem;
+    line-height: 1.7;
+  }
+  .about-side {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-sm);
+  }
+  .about-side .card { padding: var(--sp-md); }
+  .meta-h {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--violet-light);
+    margin: 0 0 8px 0;
+  }
+  .about-side p {
+    margin: 4px 0;
+    font-size: 0.95rem;
+  }
+  @media (max-width: 800px) {
+    .about-grid { grid-template-columns: 1fr; }
+  }
+</style>

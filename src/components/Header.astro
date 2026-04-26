@@ -1,0 +1,61 @@
+---
+const nav = [
+  { href: '/agents', label: 'All Agents' },
+  { href: '/#categories', label: 'Categories' },
+  { href: '/submit', label: 'Submit' },
+  { href: '/about', label: 'About' },
+];
+---
+
+<header class="site-header">
+  <div class="container header-row">
+    <a href="/" class="brand" aria-label="MyAgentStack home">
+      <span class="brand-mark">My</span><span class="brand-mark gradient-text">AgentStack</span>
+    </a>
+    <nav class="site-nav" aria-label="Primary">
+      {nav.map((item) => (
+        <a href={item.href}>{item.label}</a>
+      ))}
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    backdrop-filter: blur(12px);
+    background: rgba(12, 10, 26, 0.7);
+    border-bottom: 1px solid var(--border);
+  }
+  .header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px var(--sp-md);
+  }
+  .brand {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--white);
+    letter-spacing: -0.02em;
+  }
+  .brand:hover { color: var(--white); }
+  .brand-mark { display: inline-block; }
+  .site-nav {
+    display: flex;
+    gap: var(--sp-md);
+  }
+  .site-nav a {
+    color: var(--text);
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+  .site-nav a:hover { color: var(--white); }
+  @media (max-width: 640px) {
+    .site-nav { gap: var(--sp-sm); font-size: 0.85rem; }
+    .site-nav a:last-child { display: none; }
+  }
+</style>

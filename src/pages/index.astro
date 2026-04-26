@@ -1,11 +1,205 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import CategoryCard from '../components/CategoryCard.astro';
+import AgentCard from '../components/AgentCard.astro';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const categories = (await getCollection('categories')).sort(
+  (a, b) => a.data.order - b.data.order
+);
+const allAgents = (await getCollection('agents')).filter(
+  (a) => a.data.status === 'live'
+);
+const featured = allAgents.filter(
+  (a) => a.data.featured && a.data.tier === 'curated'
+);
+
+const categoryLabels: Record<string, string> = Object.fromEntries(
+  categories.map((c) => [c.id, c.data.name])
+);
+
+const agentCounts: Record<string, number> = {};
+for (const a of allAgents) {
+  agentCounts[a.data.category] = (agentCounts[a.data.category] ?? 0) + 1;
+}
+
+const curatedCount = allAgents.filter((a) => a.data.tier === 'curated').length;
+const communityCount = allAgents.filter((a) => a.data.tier === 'community').length;
+
+const description =
+  'The opinionated directory of AI agents for marketing, comms, and media — curated by Sarah Evans. Browse comms agents, content agents, social agents, SEO and GEO agents, martech agents, brand agents, and media agents.';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'MyAgentStack — AI agents for marketing, comms, and media',
+  description,
+  url: 'https://myagentstack.io',
+  about: {
+    '@type': 'Thing',
+    name: 'AI agents for marketing and communications',
+  },
+  publisher: {
+    '@type': 'Person',
+    name: 'Sarah Evans',
+    url: 'https://asksarah.ai',
+    sameAs: ['https://zenmedia.com'],
+  },
+  hasPart: categories.map((c) => ({
+    '@type': 'CollectionPage',
+    name: c.data.name,
+    description: c.data.tagline,
+    url: `https://myagentstack.io/categories/${c.id}`,
+  })),
+};
 ---
 
-<Layout>
-	<Welcome />
-</Layout>
+<BaseLayout
+  title="MyAgentStack — AI agents for marketing, comms, and media"
+  description={description}
+  jsonLd={jsonLd}
+>
+  <Hero
+    eyebrow="The marketing AI directory"
+    title="AI agents for marketing, comms, and"
+    highlight=" media."
+    subtitle="The opinionated directory of AI agents that ship real marketing work — curated by Sarah Evans (Zen Media). Comms, content, social, SEO/GEO, martech, brand, and media agents, all in one stack."
+    primaryCta={{ href: '/agents', label: 'Browse all agents' }}
+    secondaryCta={{ href: '#categories', label: 'See categories' }}
+  />
+
+  <section id="categories" class="tight">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Browse by category</span>
+        <h2>Every category. One stack.</h2>
+        <p class="muted lead">
+          Seven categories cover the work of modern marketing — from pitching journalists to ranking in AI Overviews.
+          Every agent is vetted for actual delivery, not demos.
+        </p>
+      </div>
+      <div class="grid grid-categories mt-lg">
+        {categories.map((c) => (
+          <CategoryCard
+            href={`/categories/${c.id}`}
+            name={c.data.name}
+            tagline={c.data.tagline}
+            count={agentCounts[c.id] ?? 0}
+          />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="featured-section">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Featured agents</span>
+        <h2>Start with these.</h2>
+        <p class="muted lead">
+          The flagship lineup — the agents that show up in real client engagements at Zen Media every week.
+        </p>
+      </div>
+      <div class="grid grid-agents mt-lg">
+        {featured.map((a) => (
+          <AgentCard
+            href={`/agents/${a.id}`}
+            name={a.data.name}
+            tagline={a.data.tagline}
+            category={a.data.category}
+            categoryLabel={categoryLabels[a.data.category] ?? a.data.category}
+            featured={a.data.featured}
+            tier={a.data.tier}
+          />
+        ))}
+      </div>
+      <div class="cta-row mt-xl">
+        <a class="btn btn-ghost" href="/agents">See all {allAgents.length} agents →</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="why-section">
+    <div class="container why-grid">
+      <div>
+        <span class="eyebrow">Why MyAgentStack</span>
+        <h2>Practitioner-led, not platform-led.</h2>
+        <p class="muted">
+          Most AI agent directories are built by platform companies showcasing what's possible. MyAgentStack is built by
+          a practitioner showcasing what actually ships. Every agent has been used to deliver client work — not just
+          demoed in a launch video.
+        </p>
+        <p class="muted">
+          That's the trade-off you're choosing: fewer agents, higher signal.
+        </p>
+      </div>
+      <div class="why-stats">
+        <div class="stat">
+          <span class="stat-num gradient-text">{curatedCount}</span>
+          <span class="stat-label">curated agents</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num gradient-text">{communityCount}</span>
+          <span class="stat-label">community-listed</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num gradient-text">{categories.length}</span>
+          <span class="stat-label">marketing categories</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .section-head {
+    max-width: 720px;
+  }
+  .lead {
+    font-size: 1.05rem;
+    margin-top: var(--sp-sm);
+  }
+  .featured-section {
+    background: linear-gradient(180deg, transparent, rgba(124, 58, 237, 0.04), transparent);
+  }
+  .cta-row {
+    display: flex;
+    justify-content: center;
+  }
+  .why-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: var(--sp-2xl);
+    align-items: center;
+  }
+  .why-stats {
+    display: grid;
+    gap: var(--sp-md);
+  }
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: var(--sp-md);
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+  }
+  .stat-num {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 3rem;
+    line-height: 1;
+  }
+  .stat-label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+  }
+  @media (max-width: 800px) {
+    .why-grid { grid-template-columns: 1fr; gap: var(--sp-lg); }
+  }
+</style>

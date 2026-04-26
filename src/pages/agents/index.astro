@@ -1,0 +1,130 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Hero from '../../components/Hero.astro';
+import AgentCard from '../../components/AgentCard.astro';
+
+const categories = (await getCollection('categories')).sort(
+  (a, b) => a.data.order - b.data.order
+);
+
+// Filter out pending; sort curated first, then alpha by name
+const agents = (await getCollection('agents'))
+  .filter((a) => a.data.status === 'live')
+  .sort((a, b) => {
+    if (a.data.tier !== b.data.tier) return a.data.tier === 'curated' ? -1 : 1;
+    if (a.data.featured !== b.data.featured) return a.data.featured ? -1 : 1;
+    return a.data.name.localeCompare(b.data.name);
+  });
+
+const curatedCount = agents.filter((a) => a.data.tier === 'curated').length;
+const communityCount = agents.filter((a) => a.data.tier === 'community').length;
+
+const categoryLabels: Record<string, string> = Object.fromEntries(
+  categories.map((c) => [c.id, c.data.name])
+);
+
+const description =
+  'Every AI agent in MyAgentStack — curated picks plus community-listed tools across comms, content, social, SEO/GEO, martech, brand, and media. The full directory of AI agents for marketing.';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'All AI agents for marketing — MyAgentStack',
+  description,
+  url: 'https://myagentstack.io/agents',
+  numberOfItems: agents.length,
+  itemListElement: agents.map((a, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: a.data.name,
+    description: a.data.tagline,
+    url: `https://myagentstack.io/agents/${a.id}`,
+  })),
+};
+---
+
+<BaseLayout
+  title="All AI agents for marketing"
+  description={description}
+  jsonLd={jsonLd}
+>
+  <Hero
+    eyebrow={`${agents.length} agents · ${curatedCount} curated · ${communityCount} community`}
+    title="The full"
+    highlight=" stack."
+    subtitle="Every AI agent in MyAgentStack, across all categories. Curated picks vouched for by Sarah, plus community-listed tools indexed for discovery."
+    primaryCta={{ href: '/submit', label: 'Submit your agent' }}
+  />
+
+  <section class="tight">
+    <div class="container">
+      <div class="filter-bar">
+        <button class="filter-btn is-active" data-filter="all">All ({agents.length})</button>
+        <button class="filter-btn" data-filter="curated">Curated ({curatedCount})</button>
+        <button class="filter-btn" data-filter="community">Community ({communityCount})</button>
+      </div>
+      <div class="grid grid-agents">
+        {agents.map((a) => (
+          <AgentCard
+            href={`/agents/${a.id}`}
+            name={a.data.name}
+            tagline={a.data.tagline}
+            category={a.data.category}
+            categoryLabel={categoryLabels[a.data.category] ?? a.data.category}
+            featured={a.data.featured}
+            tier={a.data.tier}
+          />
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .filter-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: var(--sp-md);
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .filter-btn:hover {
+    color: var(--white);
+    border-color: var(--border-strong);
+  }
+  .filter-btn.is-active {
+    background: rgba(124, 58, 237, 0.15);
+    border-color: rgba(167, 139, 250, 0.4);
+    color: var(--violet-light);
+  }
+</style>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
+  const cards = document.querySelectorAll<HTMLElement>('.agent-card');
+  buttons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const filter = btn.dataset.filter ?? 'all';
+      buttons.forEach((b) => b.classList.toggle('is-active', b === btn));
+      cards.forEach((card) => {
+        const tier = card.dataset.tier ?? 'curated';
+        const show = filter === 'all' || tier === filter;
+        card.style.display = show ? '' : 'none';
+      });
+    });
+  });
+</script>

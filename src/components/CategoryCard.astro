@@ -1,0 +1,66 @@
+---
+interface Props {
+  href: string;
+  name: string;
+  tagline: string;
+  count: number;
+}
+
+const { href, name, tagline, count } = Astro.props;
+---
+
+<a class="cat-card card" href={href}>
+  <div class="cat-row">
+    <h3 class="cat-name">{name}</h3>
+    <span class="cat-count">{count}</span>
+  </div>
+  <p class="cat-tag">{tagline}</p>
+  <span class="cat-cta">Browse →</span>
+</a>
+
+<style>
+  .cat-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    text-decoration: none;
+    color: inherit;
+    height: 100%;
+  }
+  .cat-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--sp-sm);
+  }
+  .cat-name {
+    font-size: 1.5rem;
+    margin: 0;
+    background: var(--text-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .cat-count {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+  }
+  .cat-tag {
+    color: var(--text);
+    font-size: 0.95rem;
+    margin: 0;
+    flex: 1;
+  }
+  .cat-cta {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--cyan-light);
+    margin-top: var(--sp-sm);
+  }
+  .cat-card:hover .cat-cta { color: var(--violet-light); }
+</style>

@@ -1,0 +1,240 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+
+// Formspree endpoint — replace YOUR_FORM_ID with the ID from formspree.io
+// 1. Sign up at https://formspree.io with sarah@evans-global.com
+// 2. Create a new form, copy the endpoint URL
+// 3. Replace the value below
+const FORMSPREE_ENDPOINT = 'https://formspree.io/f/mgorqjzy';
+
+const description =
+  'Submit an AI agent for marketing, comms, or media to MyAgentStack. Curated by Sarah Evans — every submission reviewed before listing.';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: 'Submit an AI agent — MyAgentStack',
+  description,
+  url: 'https://myagentstack.io/submit',
+};
+---
+
+<BaseLayout title="Submit an AI agent" description={description} jsonLd={jsonLd}>
+  <Hero
+    eyebrow="Submit"
+    title="Add your AI agent to"
+    highlight=" the stack."
+    subtitle="MyAgentStack indexes AI agents that ship real marketing, comms, and media work. Submit yours and we'll review — community-listed entries publish weekly, and standout agents get promoted to Curated."
+  />
+
+  <section class="tight">
+    <div class="container submit-grid">
+      <form
+        class="submit-form"
+        action={FORMSPREE_ENDPOINT}
+        method="POST"
+      >
+        <input type="hidden" name="_subject" value="MyAgentStack: New agent submission" />
+        <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off" />
+
+        <div class="field">
+          <label for="name">Agent name *</label>
+          <input id="name" name="agent_name" type="text" required maxlength="80" placeholder="e.g. Anchor Article Writer" />
+        </div>
+
+        <div class="field">
+          <label for="tagline">One-line tagline *</label>
+          <input id="tagline" name="tagline" type="text" required maxlength="140" placeholder="What it does, in under 140 chars" />
+        </div>
+
+        <div class="row">
+          <div class="field">
+            <label for="category">Category *</label>
+            <select id="category" name="category" required>
+              <option value="">Select a category</option>
+              <option value="comms">Comms</option>
+              <option value="content">Content</option>
+              <option value="social">Social</option>
+              <option value="seo-geo">SEO &amp; GEO</option>
+              <option value="martech">Martech</option>
+              <option value="brand">Brand</option>
+              <option value="media">Media</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="pricing">Pricing</label>
+            <input id="pricing" name="pricing" type="text" placeholder="Free / Paid / Freemium / Custom" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="url">Agent URL *</label>
+          <input id="url" name="url" type="url" required placeholder="https://" />
+        </div>
+
+        <div class="field">
+          <label for="description">Description *</label>
+          <textarea id="description" name="description" required rows="5" placeholder="2-4 sentences. What does it do, who is it for, what's special about it?"></textarea>
+        </div>
+
+        <div class="field">
+          <label for="differentiator">What makes it different?</label>
+          <textarea id="differentiator" name="differentiator" rows="3" placeholder="Why should this be in the stack? What does it do that other tools don't?"></textarea>
+        </div>
+
+        <hr />
+
+        <div class="row">
+          <div class="field">
+            <label for="maker">Maker / company *</label>
+            <input id="maker" name="maker" type="text" required placeholder="Who built it" />
+          </div>
+          <div class="field">
+            <label for="email">Your email *</label>
+            <input id="email" name="email" type="email" required placeholder="So we can follow up" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="checkbox">
+            <input type="checkbox" name="agree" value="yes" required />
+            <span>I confirm the info above is accurate and I have rights to submit this agent.</span>
+          </label>
+        </div>
+
+        <button class="btn btn-primary" type="submit">Submit for review</button>
+
+        <p class="muted small">
+          Submissions are reviewed by Sarah Evans. You'll hear back within 5-7 days. Community-listed agents
+          publish in a weekly batch.
+        </p>
+      </form>
+
+      <aside class="submit-side">
+        <div class="card">
+          <h4 class="meta-h">What we accept</h4>
+          <ul>
+            <li>AI agents that ship real marketing, comms, or media work</li>
+            <li>Tools you've built or operate yourself</li>
+            <li>Public products with a real URL</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4 class="meta-h">Tiers</h4>
+          <p>
+            <strong>Curated</strong> — vouched-for by Sarah personally. Limited entries, top of every page.
+          </p>
+          <p>
+            <strong>Community</strong> — listed and indexed. Standout entries get promoted to Curated over time.
+          </p>
+        </div>
+        <div class="card">
+          <h4 class="meta-h">Not a fit</h4>
+          <ul>
+            <li>Generic AI assistants (use ChatGPT/Claude direct)</li>
+            <li>Tools without a marketing / comms use case</li>
+            <li>Affiliate or sponsored placement requests</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .submit-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 320px;
+    gap: var(--sp-xl);
+    align-items: start;
+  }
+  .submit-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-md);
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: var(--sp-lg);
+  }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--sp-sm);
+  }
+  label {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--violet-light);
+  }
+  input[type="text"],
+  input[type="url"],
+  input[type="email"],
+  select,
+  textarea {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--white);
+    border-radius: var(--radius-md);
+    padding: 12px 14px;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    width: 100%;
+  }
+  input:focus,
+  select:focus,
+  textarea:focus {
+    outline: none;
+    border-color: var(--violet-light);
+  }
+  textarea { resize: vertical; min-height: 80px; }
+  .checkbox {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    cursor: pointer;
+    text-transform: none;
+    letter-spacing: 0;
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-size: 0.9rem;
+    color: var(--text);
+  }
+  .checkbox input { width: auto; margin-top: 3px; }
+  .small { font-size: 0.85rem; }
+  .submit-side { display: flex; flex-direction: column; gap: var(--sp-sm); }
+  .submit-side .card { padding: var(--sp-md); }
+  .submit-side .meta-h {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--violet-light);
+    margin: 0 0 8px 0;
+  }
+  .submit-side ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; }
+  .submit-side li {
+    color: var(--text);
+    font-size: 0.9rem;
+    padding-left: 14px;
+    position: relative;
+  }
+  .submit-side li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--violet-light);
+  }
+  .submit-side p { font-size: 0.9rem; margin: 4px 0; color: var(--text); }
+  hr { margin: 0; border: 0; border-top: 1px solid var(--border); }
+  @media (max-width: 800px) {
+    .submit-grid { grid-template-columns: 1fr; }
+    .row { grid-template-columns: 1fr; }
+  }
+</style>

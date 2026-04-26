@@ -1,0 +1,64 @@
+---
+interface Props {
+  eyebrow?: string;
+  title: string;
+  highlight?: string;
+  subtitle: string;
+  primaryCta?: { href: string; label: string };
+  secondaryCta?: { href: string; label: string };
+}
+
+const { eyebrow, title, highlight, subtitle, primaryCta, secondaryCta } = Astro.props;
+---
+
+<section class="hero">
+  <div class="container hero-inner">
+    {eyebrow && <span class="eyebrow">{eyebrow}</span>}
+    <h1 class="hero-title">
+      {title}
+      {highlight && <span class="gradient-text">{highlight}</span>}
+    </h1>
+    <p class="hero-sub">{subtitle}</p>
+    {(primaryCta || secondaryCta) && (
+      <div class="hero-ctas">
+        {primaryCta && (
+          <a class="btn btn-primary" href={primaryCta.href}>{primaryCta.label}</a>
+        )}
+        {secondaryCta && (
+          <a class="btn btn-ghost" href={secondaryCta.href}>{secondaryCta.label}</a>
+        )}
+      </div>
+    )}
+    <div class="gradient-bar" aria-hidden="true"></div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    padding: var(--sp-3xl) 0 var(--sp-2xl);
+  }
+  .hero-inner {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-md);
+    align-items: flex-start;
+    max-width: 920px;
+  }
+  .hero-title {
+    font-size: clamp(2.5rem, 6vw, 4.25rem);
+    margin: 0;
+  }
+  .hero-sub {
+    font-size: clamp(1.1rem, 1.6vw, 1.35rem);
+    color: var(--text);
+    max-width: 720px;
+    margin: 0;
+  }
+  .hero-ctas {
+    display: flex;
+    gap: var(--sp-sm);
+    flex-wrap: wrap;
+    margin-top: var(--sp-sm);
+  }
+  .gradient-bar { margin-top: var(--sp-sm); }
+</style>
