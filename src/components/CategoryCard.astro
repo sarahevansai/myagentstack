@@ -3,17 +3,13 @@ interface Props {
   href: string;
   name: string;
   tagline: string;
-  count: number;
 }
 
-const { href, name, tagline, count } = Astro.props;
+const { href, name, tagline } = Astro.props;
 ---
 
 <a class="cat-card card" href={href}>
-  <div class="cat-row">
-    <h3 class="cat-name">{name}</h3>
-    <span class="cat-count">{count}</span>
-  </div>
+  <h3 class="cat-name">{name}</h3>
   <p class="cat-tag">{tagline}</p>
   <span class="cat-cta">Browse →</span>
 </a>

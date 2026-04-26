@@ -50,7 +50,6 @@ const jsonLd = {
   jsonLd={jsonLd}
 >
   <Hero
-    eyebrow={`${agents.length} agents · ${curatedCount} curated · ${communityCount} community`}
     title="The full"
     highlight=" stack."
     subtitle="Every AI agent in MyAgentStack, across all categories. Curated picks vouched for by Sarah, plus community-listed tools indexed for discovery."
@@ -60,9 +59,9 @@ const jsonLd = {
   <section class="tight">
     <div class="container">
       <div class="filter-bar">
-        <button class="filter-btn is-active" data-filter="all">All ({agents.length})</button>
-        <button class="filter-btn" data-filter="curated">Curated ({curatedCount})</button>
-        <button class="filter-btn" data-filter="community">Community ({communityCount})</button>
+        <button class="filter-btn is-active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="curated">Curated</button>
+        <button class="filter-btn" data-filter="community">Community</button>
       </div>
       <div class="grid grid-agents">
         {agents.map((a) => (

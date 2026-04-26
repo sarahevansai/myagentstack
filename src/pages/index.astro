@@ -75,7 +75,6 @@ const jsonLd = {
         {categories.map((c) => (
           <a class="strip-pill" href={`/categories/${c.id}`}>
             <span class="strip-name">{c.data.name}</span>
-            <span class="strip-count">{agentCounts[c.id] ?? 0}</span>
           </a>
         ))}
       </div>
@@ -107,7 +106,7 @@ const jsonLd = {
         ))}
       </div>
       <div class="cta-row mt-lg">
-        <a class="btn btn-ghost" href="/agents">See all {allAgents.length} agents →</a>
+        <a class="btn btn-ghost" href="/agents">Browse the full directory →</a>
       </div>
     </div>
   </section>
@@ -128,7 +127,6 @@ const jsonLd = {
             href={`/categories/${c.id}`}
             name={c.data.name}
             tagline={c.data.tagline}
-            count={agentCounts[c.id] ?? 0}
           />
         ))}
       </div>
@@ -136,32 +134,18 @@ const jsonLd = {
   </section>
 
   <section class="why-section">
-    <div class="container why-grid">
-      <div>
+    <div class="container">
+      <div class="why-content">
         <span class="eyebrow">Why MyAgentStack</span>
         <h2>Real agents. Real URLs. Tiered honestly.</h2>
         <p class="muted">
-          Other directories pad their counts with services, platforms, and "AI-powered" SaaS. MyAgentStack lists only
+          Other directories pad their lists with services, platforms, and "AI-powered" SaaS. MyAgentStack lists only
           actual AI agents, vibecoded products, and AI tools — each with a working public URL.
         </p>
         <p class="muted">
           <strong>Curated</strong> entries are tools we use ourselves. <strong>Community</strong> entries are indexed
           but not vouched for. The split is honest, so you can spend your time on what actually works.
         </p>
-      </div>
-      <div class="why-stats">
-        <div class="stat">
-          <span class="stat-num gradient-text">{curatedCount}</span>
-          <span class="stat-label">curated agents</span>
-        </div>
-        <div class="stat">
-          <span class="stat-num gradient-text">{communityCount}</span>
-          <span class="stat-label">community-listed</span>
-        </div>
-        <div class="stat">
-          <span class="stat-num gradient-text">{categories.length}</span>
-          <span class="stat-label">marketing categories</span>
-        </div>
       </div>
     </div>
   </section>
@@ -211,18 +195,12 @@ const jsonLd = {
     color: var(--white);
   }
   .strip-name { font-weight: 500; }
-  .strip-count {
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    color: var(--violet-light);
-    background: rgba(124, 58, 237, 0.15);
-    padding: 2px 8px;
-    border-radius: 999px;
-  }
-
   .featured-section {
     background: linear-gradient(180deg, transparent, rgba(124, 58, 237, 0.04), transparent);
     padding-top: var(--sp-xl);
+  }
+  .why-content {
+    max-width: 720px;
   }
   .cta-row {
     display: flex;
