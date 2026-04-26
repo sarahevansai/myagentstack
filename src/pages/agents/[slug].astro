@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Rating from '../../components/Rating.astro';
+import { inferPricing } from '../../lib/pricing';
 
 export async function getStaticPaths() {
   const agents = (await getCollection('agents')).filter(
@@ -24,6 +25,8 @@ const categoryLabel = category?.data.name ?? data.category;
 const siblingAgents = (await getCollection('agents'))
   .filter((a) => a.data.category === data.category && a.id !== agent.id)
   .slice(0, 3);
+
+const priceBadge = inferPricing(data.pricing);
 
 const jsonLd = [
   {
@@ -85,7 +88,7 @@ const jsonLd = [
   description={data.description}
   jsonLd={jsonLd}
 >
-  <article class="agent-page">
+  <article class="agent-page" data-category={data.category}>
     <div class="container">
       <nav class="crumbs" aria-label="Breadcrumb">
         <a href="/">Home</a>
@@ -98,6 +101,7 @@ const jsonLd = [
       <header class="agent-hero">
         <div class="hero-tags">
           <span class="tag">{categoryLabel}</span>
+          <span class={priceBadge.className} title={data.pricing}>{priceBadge.label}</span>
           {data.tier === 'curated' ? (
             <span class="hero-badge hero-badge-curated">Curated by Sarah</span>
           ) : (

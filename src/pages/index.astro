@@ -85,7 +85,7 @@ const jsonLd = {
     <div class="container">
       <div class="strip-row" role="navigation" aria-label="Categories">
         {categories.map((c) => (
-          <a class="strip-pill" href={`/categories/${c.id}`}>
+          <a class="strip-pill" href={`/categories/${c.id}`} data-category={c.id}>
             <span class="strip-name">{c.data.name}</span>
           </a>
         ))}
@@ -136,6 +136,7 @@ const jsonLd = {
             featured={a.data.featured}
             tier={a.data.tier}
             rating={a.data.rating}
+            pricing={a.data.pricing}
           />
         ))}
       </div>
@@ -200,16 +201,16 @@ const jsonLd = {
     gap: 8px;
     padding: 8px 14px;
     background: var(--card);
-    border: 1px solid var(--border);
+    border: 1px solid color-mix(in oklab, var(--cat-color, var(--violet-light)) 32%, transparent);
     border-radius: 999px;
     font-size: 0.9rem;
-    color: var(--text);
+    color: var(--cat-color, var(--text));
     text-decoration: none;
     transition: all 0.15s ease;
   }
   .strip-pill:hover {
-    background: var(--card-hover);
-    border-color: var(--border-strong);
+    background: color-mix(in oklab, var(--cat-color, var(--violet-light)) 14%, var(--card-hover));
+    border-color: color-mix(in oklab, var(--cat-color, var(--violet-light)) 60%, transparent);
     color: var(--white);
   }
   .strip-name { font-weight: 500; }

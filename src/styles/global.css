@@ -44,7 +44,33 @@
 
   /* Container */
   --max-w: 1200px;
+
+  /* Per-category accent colors — give each category page + cards
+   * a unique tint while preserving the dark brand backdrop. */
+  --cat-comms: #f472b6;     /* pink — pitch/comms */
+  --cat-content: #f59e0b;   /* amber — editorial */
+  --cat-social: #38bdf8;    /* sky — social */
+  --cat-seo-geo: #10b981;   /* emerald — search/visibility */
+  --cat-martech: #818cf8;   /* indigo — ops */
+  --cat-brand: #a78bfa;     /* violet — creative (brand signature) */
+  --cat-media: #fb923c;     /* orange — broadcast/distribution */
+
+  /* Pricing badge colors */
+  --price-free: #4ade80;
+  --price-freemium: #34d399;
+  --price-paid: #fb923c;
+  --price-open-source: #22d3ee;
+  --price-blueprint: #a78bfa;
 }
+
+/* Apply --cat-color to any subtree marked with data-category */
+[data-category="comms"]    { --cat-color: var(--cat-comms); }
+[data-category="content"]  { --cat-color: var(--cat-content); }
+[data-category="social"]   { --cat-color: var(--cat-social); }
+[data-category="seo-geo"]  { --cat-color: var(--cat-seo-geo); }
+[data-category="martech"]  { --cat-color: var(--cat-martech); }
+[data-category="brand"]    { --cat-color: var(--cat-brand); }
+[data-category="media"]    { --cat-color: var(--cat-media); }
 
 *,
 *::before,
@@ -177,7 +203,7 @@ img, svg { display: block; max-width: 100%; }
   color: var(--white);
 }
 
-/* Tag pill */
+/* Tag pill — picks up the parent's --cat-color when set */
 .tag {
   display: inline-flex;
   align-items: center;
@@ -188,10 +214,28 @@ img, svg { display: block; max-width: 100%; }
   letter-spacing: 0.1em;
   padding: 4px 10px;
   border-radius: 999px;
-  background: rgba(124, 58, 237, 0.12);
-  border: 1px solid var(--border);
-  color: var(--violet-light);
+  background: color-mix(in oklab, var(--cat-color, var(--violet-light)) 14%, transparent);
+  border: 1px solid color-mix(in oklab, var(--cat-color, var(--violet-light)) 38%, transparent);
+  color: var(--cat-color, var(--violet-light));
 }
+
+/* Pricing badge */
+.price {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+.price-free        { background: rgba(74, 222, 128, 0.12); color: var(--price-free); border: 1px solid rgba(74, 222, 128, 0.4); }
+.price-freemium    { background: rgba(52, 211, 153, 0.12); color: var(--price-freemium); border: 1px solid rgba(52, 211, 153, 0.4); }
+.price-paid        { background: rgba(251, 146, 60, 0.12); color: var(--price-paid); border: 1px solid rgba(251, 146, 60, 0.4); }
+.price-open-source { background: rgba(34, 211, 238, 0.12); color: var(--price-open-source); border: 1px solid rgba(34, 211, 238, 0.4); }
+.price-blueprint   { background: rgba(167, 139, 250, 0.12); color: var(--price-blueprint); border: 1px solid rgba(167, 139, 250, 0.4); }
 
 /* Grids */
 .grid {

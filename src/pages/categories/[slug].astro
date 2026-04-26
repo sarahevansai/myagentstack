@@ -78,10 +78,12 @@ const jsonLd = [
   description={description}
   jsonLd={jsonLd}
 >
-  <Hero
-    title={category.data.name}
-    subtitle={category.data.tagline}
-  />
+  <div data-category={category.id}>
+    <Hero
+      title={category.data.name}
+      subtitle={category.data.tagline}
+    />
+  </div>
 
   <section class="tight">
     <div class="container">
@@ -101,6 +103,7 @@ const jsonLd = [
               featured={a.data.featured}
               tier={a.data.tier}
               rating={a.data.rating}
+              pricing={a.data.pricing}
             />
           ))}
         </div>
